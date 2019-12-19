@@ -1,0 +1,11 @@
+p {
+  color: blue;
+}
+div {
+  background: red;
+}
+@media (max-width: 600px) {
+  div {
+    background: blue;
+  }
+}

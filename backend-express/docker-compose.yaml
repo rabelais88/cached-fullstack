@@ -1,0 +1,44 @@
+# for server development purpose only.
+# please use docker-compose on top level for production deploy
+# please use docker stack deploy instead of docker-compose up. for ease in production.
+version: "3.7"
+services:
+  app-express:
+    image: node:12-alpine
+    environment:
+      # - NODE_ENV=development # the NODE_ENV is predefined from npm script
+      - PORT=4500
+      - REDIS_URL=redis://db-redis
+      - MONGO_URI=mongodb://db-mongo:27017
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app
+    ports:
+      - 4500:4500
+    command: yarn dev
+    networks:
+      - overlay
+
+  db-redis: # connect via redis://db-redis:6379
+    image: redis:5.0.7-alpine
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - overlay
+
+  db-mongo: # connect via mongo
+    image: mongo:latest
+    volumes:
+      - mongodb:/data/db
+    networks:
+      - overlay
+    # environment:
+      # MONGO_INITDB_ROOT_USERNAME: root
+      # MONGO_INITDB_ROOT_PASSWORD: example
+
+networks:
+  overlay:
+    driver: overlay
+volumes:
+  mongodb: 
