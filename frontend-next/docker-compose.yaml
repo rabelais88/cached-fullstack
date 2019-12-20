@@ -1,0 +1,20 @@
+# hot-reloading enabled quick image
+# must rebuild when pakckages are updated
+version: "3.7"
+services:
+  app-nextjs:
+    build:
+      context: .
+      dockerfile: dev.dockerfile
+    # image: cached-fullstack-frontend:latest
+    environment: 
+      - PORT=3500
+    ports:
+      - 3500:3500
+    volumes:
+      - ./:/home/node/app
+      - app-nextjs:/home/node/app/node_modules
+    command: yarn dev
+
+volumes:
+  app-nextjs:

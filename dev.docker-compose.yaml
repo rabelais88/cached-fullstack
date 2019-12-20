@@ -1,6 +1,7 @@
 # for server development purpose only.
 # please use docker-compose on top level for production deploy
 # please use docker stack deploy instead of docker-compose up. for ease in production.
+# hot-reloading is enabled for both frontend and backend
 version: "3.7"
 services:
   app-express:
@@ -26,14 +27,15 @@ services:
         window: 120s
 
   app-next:
-    image: node:12-alpine
+    image: fullstack-frontend-dev:latest # frontend-next/dev.dockerfile
     environment:
       - PORT=3500
       - API_URL=http://localhost:4500
       - GRAPHQL_URL=http://localhost:4500/graphql
     working_dir: /home/node/app
     volumes:
-     - ./frontend-next:/home/node/app
+      - ./frontend-next:/home/node/app
+      - app-nextjs:/home/node/app/node_modules
     ports:
       - 3500:3500
     command: yarn dev
@@ -55,11 +57,12 @@ services:
     networks:
       - overlay
     # environment:
-      # MONGO_INITDB_ROOT_USERNAME: root
-      # MONGO_INITDB_ROOT_PASSWORD: example
+    # MONGO_INITDB_ROOT_USERNAME: root
+    # MONGO_INITDB_ROOT_PASSWORD: example
 
 networks:
   overlay:
     driver: overlay
 volumes:
-  mongodb: 
+  mongodb:
+  app-nextjs:

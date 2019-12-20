@@ -1,0 +1,6 @@
+FROM node:12-alpine as build
+COPY . /home/node/app
+WORKDIR /home/node/app
+RUN yarn install --production
+RUN yarn build
+CMD yarn start
