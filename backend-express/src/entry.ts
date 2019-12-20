@@ -3,11 +3,15 @@ import realRedis from 'redis';
 import mockRedis from 'redis-mock'; // for testing
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import graphqlHTTP from 'express-graphql';
+import { buildSchema } from 'graphql';
 
 // local import
 import router from './router';
 import errorHandler from './controller/error';
 import { PORT, NODE_ENV, REDIS_URL, MONGO_URI } from './env';
+import rootResolver from './gql-resolver/root';
+import rootSchema from './gql-schema/root';
 
 export const app = express();
 const Redis = NODE_ENV === 'test' ? mockRedis : realRedis;
@@ -19,7 +23,7 @@ const optsRedis = {
   url: REDIS_URL,
 };
 
-const logger = (...arg: any[]):void => console.log('APP-entry:', ...arg);
+const logger = (...arg: any[]): void => console.log('APP-entry:', ...arg);
 
 let morganOpt = 'tiny';
 if (['development', 'test'].includes(NODE_ENV)) {
@@ -28,6 +32,13 @@ if (['development', 'test'].includes(NODE_ENV)) {
 app.use(morgan(morganOpt));
 app.use(router);
 app.use(errorHandler);
+
+const graphqlOpts = {
+  schema: rootSchema,
+  rootValue: rootResolver,
+  graphiql: true,
+};
+app.use('/graphql', graphqlHTTP(graphqlOpts));
 
 //   rds.set('string key', 'string val', Redis.print);
 
@@ -65,6 +76,7 @@ async function _main() {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
+    useUnifiedTopology: true
   });
 }
 

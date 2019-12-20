@@ -18,6 +18,12 @@ services:
     command: yarn dev
     networks:
       - overlay
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 3
+        window: 120s
 
   db-redis: # connect via redis://db-redis:6379
     image: redis:5.0.7-alpine
