@@ -14,4 +14,4 @@ docker stack deploy -c docker-commpose.yaml ${PREFERRED_NAME}
 docker stack rm ${PREFERRED_NAME}
 ```
 
-- please refer to each subdirectory for more info on individual test environment
+- each subdirectory consists separate docker-compose files for isolated dev/test.
