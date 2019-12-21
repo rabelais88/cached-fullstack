@@ -1,0 +1,11 @@
+language: node_js
+before_script:
+  - cd backend-express
+  - yarn install
+  - cd frontend-next
+  - yarn install
+script:
+  - cd backend-express
+  - yarn test
+  - cd frontend-express
+  - yarn test
