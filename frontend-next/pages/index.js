@@ -6,6 +6,7 @@ function HelloWorld() {
     <div>
       Hello world
       <p>scoped!</p>
+      <div className="test">testing</div>
       <style jsx>{scopedStyle}</style>
       <style global jsx>
         {mainStyle}
