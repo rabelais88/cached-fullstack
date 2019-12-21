@@ -5,18 +5,17 @@
 version: "3.7"
 services:
   app-express:
-    image: node:12-alpine
+    image: cached-backend-dev:latest
     environment:
       # - NODE_ENV=development # the NODE_ENV is predefined from npm script
       - PORT=4500
       - REDIS_URL=redis://db-redis
       - MONGO_URI=mongodb://db-mongo:27017
-    working_dir: /home/node/app
     volumes:
-      - ./backend-express:/home/node/app
+      - ./:/home/node/app
+      - app-express:/home/node/app/node_modules
     ports:
       - 4500:4500
-    command: yarn dev
     networks:
       - overlay
     deploy:
@@ -27,7 +26,7 @@ services:
         window: 120s
 
   app-next:
-    image: fullstack-frontend-dev:latest # frontend-next/dev.dockerfile
+    image: cached-frontend-dev:latest # frontend-next/dev.dockerfile
     environment:
       - PORT=3500
       - API_URL=http://localhost:4500

@@ -1,4 +1,5 @@
 ```sh
+# must build image prior to the run(refer to .yaml for the image name)
 
 # dev
 docker stack deploy -c dev.docker-compose.yaml ${PREFERRED_NAME}

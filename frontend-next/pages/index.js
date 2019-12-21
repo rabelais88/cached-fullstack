@@ -1,5 +1,5 @@
-import mainStyle from '../styles/main.scss';
-import scopedStyle from '../styles/scoped.scss';
+import mainStyle from '../styles/main.postcss';
+import scopedStyle from '../styles/scoped.postcss';
 
 function HelloWorld() {
   return (

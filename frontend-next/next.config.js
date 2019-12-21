@@ -1,9 +1,10 @@
+const path = require('path');
+
 module.exports = {
   webpack: (config, { defaultLoaders }) => {
-
     // setup for sass in styled-jsx
     config.module.rules.push({
-      test: /\.scss$|\.css$/,
+      test: /\.postcss$|\.css$/,
       use: [
         defaultLoaders.babel,
         {
@@ -12,11 +13,10 @@ module.exports = {
             // type: "scoped"
             type: "global"
           }
-        },
-        "sass-loader"
+        }
       ]
     });
 
     return config;
-  }
+  },
 };
