@@ -9,5 +9,5 @@ before_script:
 script:
   - cd ../backend-express
   - yarn test
-  - cd ../frontend-express
+  - cd ../frontend-next
   - yarn test
