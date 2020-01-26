@@ -12,7 +12,7 @@ services:
       - REDIS_URL=redis://db-redis
       - MONGO_URI=mongodb://db-mongo:27017
     volumes:
-      - ./:/home/node/app
+      - ./backend-express:/home/node/app
       - app-express:/home/node/app/node_modules
     ports:
       - 4500:4500
@@ -65,3 +65,4 @@ networks:
 volumes:
   mongodb:
   app-nextjs:
+  app-express:
