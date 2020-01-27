@@ -3,18 +3,17 @@ import realRedis from 'redis';
 import mockRedis from 'redis-mock'; // for testing
 import mongoose from 'mongoose';
 import morgan from 'morgan';
-import graphqlHTTP from 'express-graphql';
-import { buildSchema } from 'graphql';
+import { ApolloServer as _ApolloServer } from 'apollo-server-express';
+import typeDefs from './gql-schema/root';
+import resolvers from './gql-resolver/root';
 
 // local import
 import router from './router';
 import errorHandler from './controller/error';
-import { PORT, NODE_ENV, REDIS_URL, MONGO_URI } from './env';
-import rootResolver from './gql-resolver/root';
-import rootSchema from './gql-schema/root';
+import { PORT, REDIS_URL, MONGO_URI, isTest, isDevelopment } from './env';
 
 export const app = express();
-const Redis = NODE_ENV === 'test' ? mockRedis : realRedis;
+const Redis = isTest ? mockRedis : realRedis;
 
 const optsRedis = {
   // redis options
@@ -26,27 +25,28 @@ const optsRedis = {
 const logger = (...arg: any[]): void => console.log('APP-entry:', ...arg);
 
 let morganOpt = 'tiny';
-if (['development', 'test'].includes(NODE_ENV)) {
+if (isDevelopment || isTest) {
   morganOpt = 'dev';
 }
 app.use(morgan(morganOpt));
 app.use(router);
 app.use(errorHandler);
 
-const graphqlOpts = {
-  schema: rootSchema,
-  rootValue: rootResolver,
-  graphiql: true,
-};
-app.use('/graphql', graphqlHTTP(graphqlOpts));
+const ApolloServer = new _ApolloServer({ typeDefs, resolvers });
+ApolloServer.applyMiddleware({ app });
 
 //   rds.set('string key', 'string val', Redis.print);
 
 function onListen() {
   logger(`LISTENING TO ${PORT}`);
+  logger(`GRAPHQL: :${PORT}${ApolloServer.graphqlPath}`);
 }
 
-// flow: _main -> mongo connection -> redis connection -> app listening
+// flow:
+// 1. _main
+// 2. mongo connection
+// 3. redis connection
+// 4. app listening
 
 function onRedisConnect() {
   logger('REDIS CONNECTED');
@@ -76,7 +76,7 @@ async function _main() {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   });
 }
 
@@ -85,6 +85,4 @@ process.on('uncaughtException', err => {
   process.exit(1); //mandatory (as per the Node docs)
 });
 
-if (NODE_ENV !== 'test') {
-  _main();
-}
+if (!isTest) _main();

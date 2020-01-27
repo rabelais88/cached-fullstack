@@ -5,7 +5,8 @@ const _schema = {
   title: String,
   authorId: String,
   content: String,
-  date: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 };
 
 const postSchema = new mongoose.Schema(_schema);

@@ -58,6 +58,16 @@ services:
     # environment:
     # MONGO_INITDB_ROOT_USERNAME: root
     # MONGO_INITDB_ROOT_PASSWORD: example
+  
+  util-elasticsearch:
+    image: elasticsearch:latest
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - overlay
+    environment:
+      - discovery.type=single-node
 
 networks:
   overlay:
